@@ -36,3 +36,28 @@
     transform: rotate(360deg);
   }
 }
+.partner-slider-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .partner-slider-container .slick-slide {
+    display: inline-block;
+    width: 200px;  /* Menampilkan 3 logo */
+  }
+}
+
+@media (max-width: 768px) {
+  .partner-slider-container .slick-slide {
+    display: inline-block;
+    width: 150px;  /* Menampilkan 2 logo */
+  }
+}
+
+@media (max-width: 480px) {
+  .partner-slider-container .slick-slide {
+    display: inline-block;
+    width: 120px;  /* Menampilkan 1 logo */
+  }
+}
