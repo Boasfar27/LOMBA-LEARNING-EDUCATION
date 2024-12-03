@@ -1,182 +1,300 @@
-import React from 'react';
-import { Helmet } from 'react-helmet';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
-import Slider from "react-slick";
-// Mendaftarkan elemen yang dibutuhkan di Chart.js
-ChartJS.register(
+import React, { useState } from "react";
+import { Helmet } from "react-helmet";
+import { Bar } from "react-chartjs-2"; // Ganti Line dengan Bar
+import {
+  Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   Title,
   Tooltip,
-  Legend
-);
+  Legend,
+} from "chart.js";
+import { FaChalkboardTeacher, FaUserGraduate, FaSchool } from "react-icons/fa";
+import { MdOutlineSchool } from "react-icons/md";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
+// Mendaftarkan elemen Chart.js
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function Home() {
-  // Data untuk grafik, bisa Anda sesuaikan dengan data pendidikan yang relevan
+  const [isOpen, setIsOpen] = useState(null); // State untuk membuka/tutup FAQ
+  const toggleFAQ = (index) => {
+    setIsOpen(isOpen === index ? null : index);
+  };
+
   const chartData = {
-    labels: ['2018', '2019', '2020', '2021', '2022'], // Tahun
+    labels: ["2018", "2019", "2020", "2021", "2022"],
     datasets: [
       {
-        label: 'Jumlah Siswa di Indonesia',
-        data: [50, 55, 60, 65, 70], // Data jumlah siswa (dalam juta)
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-        fill: true,
+        label: "Jumlah Siswa (Juta)",
+        data: [50, 55, 60, 65, 70],
+        backgroundColor: "#4caf50", // Ganti borderColor dan backgroundColor
       },
       {
-        label: 'Jumlah Guru di Indonesia',
-        data: [2, 2.2, 2.5, 2.7, 3], // Data jumlah guru (dalam juta)
-        borderColor: 'rgba(153, 102, 255, 1)',
-        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-        fill: true,
+        label: "Jumlah Guru (Juta)",
+        data: [2, 2.5, 3, 3.5, 4],
+        backgroundColor: "#2196f3", // Ganti borderColor dan backgroundColor
       },
     ],
   };
 
-  // Slider settings
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false, // Agar grafik responsif
+    scales: {
+      x: {
+        beginAtZero: true,
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
+
   const sliderSettings = {
     dots: true,
     infinite: true,
-    speed: 500,
-    slidesToShow: 1,
+    speed: 600,
+    slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 3000,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   return (
-    <div className="text-center p-8">
-      {/* Helmet untuk SEO */}
+    <div className="bg-white text-gray-800">
       <Helmet>
-        <title>Selamat Datang - Platform Pembelajaran</title>
-        <meta name="description" content="Temukan berbagai informasi tentang pendidikan di Indonesia dan berbagai materi pembelajaran di platform kami." />
+        <title>Platform Pembelajaran</title>
+        <meta
+          name="description"
+          content="Situs edukasi modern yang menyediakan informasi pendidikan, grafik statistik, dan layanan interaktif."
+        />
       </Helmet>
 
-      {/* Bagian Header dengan Background */}
-      <div className="bg-blue-600 text-white py-12">
-        <h1 className="text-5xl font-bold">Platform Pembelajaran untuk Masa Depan</h1>
-        <p className="mt-4 text-lg">Temukan berbagai informasi tentang pendidikan di Indonesia, Karakter Beajar, Berbagai Materi Pembelajaran, dan diskusi yang mendalam.</p>
-      </div>
+{/* Section */}
+<section className="relative bg-gradient-to-r from-blue-500 to-purple-500 text-white py-16 px-4 text-center rounded-b-lg mt-0">
+  <h1 className="text-4xl md:text-6xl font-bold mb-4">
+    <FaUserGraduate className="inline-block text-white mr-2" />
+    EduPlatform
+  </h1>
+  <p className="text-lg">Membantu pembelajaran menjadi lebih mudah dan interaktif.</p>
+</section>
 
-      {/* Grafik Statistik Pendidikan di Indonesia */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold flex items-center justify-center space-x-4">
-          <FontAwesomeIcon icon={faUser} size="lg" className="text-green-500" />
-          <span>Statistik Jumlah Siswa di Indonesia</span>
+
+
+      {/* Grafik Statistik */}
+      <section className="p-8">
+        <h2 className="text-2xl font-bold flex items-center justify-center mb-4">
+          <FaChalkboardTeacher className="text-blue-500 mr-2" />
+          Statistik Pendidikan
         </h2>
-        <p className="mt-2">Berikut adalah grafik perkembangan jumlah siswa dan guru di Indonesia dalam beberapa tahun terakhir.</p>
-
+        <p className="text-center text-gray-600 mb-8">
+          Perkembangan jumlah siswa dan guru dalam 5 tahun terakhir:
+        </p>
         <div className="mt-6 max-w-4xl mx-auto">
-          <Line data={chartData} />
+          <div style={{ position: "relative", height: "400px" }}>
+            <Bar data={chartData} options={chartOptions} />
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="mt-8">
-        <h2 className="text-2xl font-semibold flex items-center justify-center space-x-4">
-          <FontAwesomeIcon icon={faChalkboardTeacher} size="lg" className="text-purple-500" />
-          <span>Statistik Jumlah Guru di Indonesia</span>
-        </h2>
-        <p className="mt-2">Grafik berikut menunjukkan perkembangan jumlah guru di Indonesia dalam beberapa tahun terakhir.</p>
+      
 
-        <div className="mt-6 max-w-4xl mx-auto">
-          <Line data={chartData} />
-        </div>
-      </div>
-
-      {/* Card Informasi Pendidikan */}
-      <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Card 1 */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <img src="https://via.placeholder.com/300" alt="Ilustrasi Siswa" className="w-full h-48 object-cover rounded-md mb-4" />
-          <h3 className="text-xl font-semibold">Pendidikan Dasar</h3>
-          <p className="text-gray-600 mt-2">
-            Pendidikan dasar di Indonesia terus diperkuat dengan kebijakan pemerintah untuk mengurangi angka putus sekolah dan meningkatkan kualitas pendidikan di daerah terpencil.
-          </p>
-          <a href="https://www.kemdikbud.go.id/" className="text-blue-600 mt-4 block">Sumber: Kemdikbud</a>
-        </div>
-
-        {/* Card 2 */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <img src="https://via.placeholder.com/300" alt="Ilustrasi Guru" className="w-full h-48 object-cover rounded-md mb-4" />
-          <h3 className="text-xl font-semibold">Peran Guru dalam Pendidikan</h3>
-          <p className="text-gray-600 mt-2">
-            Guru memainkan peran kunci dalam pembangunan pendidikan di Indonesia. Pemerintah berupaya memberikan pelatihan dan peningkatan kesejahteraan bagi tenaga pendidik.
-          </p>
-          <a href="https://www.kemdikbud.go.id/" className="text-blue-600 mt-4 block">Sumber: Kemdikbud</a>
-        </div>
-
-        {/* Card 3 */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <img src="https://via.placeholder.com/300" alt="Ilustrasi Pendidikan Tinggi" className="w-full h-48 object-cover rounded-md mb-4" />
-          <h3 className="text-xl font-semibold">Pendidikan Tinggi</h3>
-          <p className="text-gray-600 mt-2">
-            Pendidikan tinggi di Indonesia terus berkembang dengan munculnya berbagai universitas baru yang menawarkan program studi berbasis teknologi dan ilmu pengetahuan.
-          </p>
-          <a href="https://www.ristekdikti.go.id/" className="text-blue-600 mt-4 block">Sumber: Ristekdikti</a>
-        </div>
-      </div>
-
-      {/* Slider untuk Materi Populer */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-4">Materi Populer</h2>
+      {/* Slider untuk Informasi Pendidikan */}
+      <section className="p-8">
+        <h2 className="text-2xl font-bold text-center mb-6">Informasi Pendidikan</h2>
         <Slider {...sliderSettings}>
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <img src="https://via.placeholder.com/300" alt="Ilustrasi Siswa" className="w-full h-48 object-cover rounded-md mb-4" />
-            <h3 className="text-xl font-semibold">Pendidikan Dasar</h3>
-            <p className="text-gray-600 mt-2">
-              Pendidikan dasar di Indonesia terus diperkuat dengan kebijakan pemerintah untuk mengurangi angka putus sekolah dan meningkatkan kualitas pendidikan di daerah terpencil.
-            </p>
-            <a href="https://www.kemdikbud.go.id/" className="text-blue-600 mt-4 block">Sumber: Kemdikbud</a>
+          <div className="p-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+              <img
+                src="https://via.placeholder.com/300"
+                alt="Pendidikan Dasar"
+                className="w-full h-48 object-cover rounded-md mb-4"
+              />
+              <h3 className="text-xl font-semibold flex items-center">
+                <MdOutlineSchool className="text-green-500 mr-2" />
+                Pendidikan Dasar
+              </h3>
+              <p className="text-gray-600 mt-2">
+                Pendidikan dasar di Indonesia terus diperkuat dengan kebijakan pemerintah untuk
+                mengurangi angka putus sekolah dan meningkatkan kualitas pendidikan di daerah
+                terpencil.
+              </p>
+              <a href="https://www.kemdikbud.go.id/" className="text-blue-600 mt-4 block">
+                Sumber: Kemdikbud
+              </a>
+            </div>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <img src="https://via.placeholder.com/300" alt="Ilustrasi Guru" className="w-full h-48 object-cover rounded-md mb-4" />
-            <h3 className="text-xl font-semibold">Peran Guru dalam Pendidikan</h3>
-            <p className="text-gray-600 mt-2">
-              Guru memainkan peran kunci dalam pembangunan pendidikan di Indonesia. Pemerintah berupaya memberikan pelatihan dan peningkatan kesejahteraan bagi tenaga pendidik.
-            </p>
-            <a href="https://www.kemdikbud.go.id/" className="text-blue-600 mt-4 block">Sumber: Kemdikbud</a>
+          <div className="p-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+              <img
+                src="https://via.placeholder.com/300"
+                alt="Peran Guru"
+                className="w-full h-48 object-cover rounded-md mb-4"
+              />
+              <h3 className="text-xl font-semibold flex items-center">
+                <FaChalkboardTeacher className="text-purple-500 mr-2" />
+                Peran Guru dalam Pendidikan
+              </h3>
+              <p className="text-gray-600 mt-2">
+                Guru memainkan peran kunci dalam pembangunan pendidikan di Indonesia. Pemerintah
+                berupaya memberikan pelatihan dan peningkatan kesejahteraan bagi tenaga pendidik.
+              </p>
+              <a href="https://www.kemdikbud.go.id/" className="text-blue-600 mt-4 block">
+                Sumber: Kemdikbud
+              </a>
+            </div>
           </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <img src="https://via.placeholder.com/300" alt="Ilustrasi Pendidikan Tinggi" className="w-full h-48 object-cover rounded-md mb-4" />
-            <h3 className="text-xl font-semibold">Pendidikan Tinggi</h3>
-            <p className="text-gray-600 mt-2">
-              Pendidikan tinggi di Indonesia terus berkembang dengan munculnya berbagai universitas baru yang menawarkan program studi berbasis teknologi dan ilmu pengetahuan.
-            </p>
-            <a href="https://www.ristekdikti.go.id/" className="text-blue-600 mt-4 block">Sumber: Ristekdikti</a>
+          <div className="p-4">
+            <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+              <img
+                src="https://via.placeholder.com/300"
+                alt="Pendidikan Tinggi"
+                className="w-full h-48 object-cover rounded-md mb-4"
+              />
+              <h3 className="text-xl font-semibold flex items-center">
+                <FaUserGraduate className="text-blue-500 mr-2" />
+                Pendidikan Tinggi
+              </h3>
+              <p className="text-gray-600 mt-2">
+                Pendidikan tinggi di Indonesia terus berkembang dengan munculnya berbagai
+                universitas baru yang menawarkan program studi berbasis teknologi dan ilmu
+                pengetahuan.
+              </p>
+              <a href="https://www.ristekdikti.go.id/" className="text-blue-600 mt-4 block">
+                Sumber: Ristekdikti
+              </a>
+            </div>
           </div>
         </Slider>
-      </div>
+      </section>
 
-      {/* Partnership Logos */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-4">Our Partnerships</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8">
-          {/* Example Logos */}
-          <a href="https://partner1.com">
-            <img src="https://picsum.photos/id/1/200/300" alt="Partner 1" className="w-full h-32 object-contain" />
-          </a>
-          <a href="https://partner2.com">
-            <img src="https://picsum.photos/id/1/200/300" alt="Partner 2" className="w-full h-32 object-contain" />
-          </a>
-          <a href="https://partner3.com">
-            <img src="https://picsum.photos/id/1/200/300" alt="Partner 3" className="w-full h-32 object-contain" />
-          </a>
-          <a href="https://partner4.com">
-            <img src="https://picsum.photos/id/1/200/300" alt="Partner 4" className="w-full h-32 object-contain" />
-          </a>
-          <a href="https://partner5.com">
-            <img src="https://picsum.photos/id/1/200/300" alt="Partner 5" className="w-full h-32 object-contain" />
+      {/* Materi Populer */}
+<section className="p-8">
+  <h2 className="text-2xl font-bold text-center mb-6">Materi Populer</h2>
+  <Slider {...sliderSettings}>
+    {[1, 2, 3].map((_, index) => (
+      <div key={index} className="p-4"> {/* Tambahkan pembungkus p-4 untuk jarak antar card */}
+        <div className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow">
+          <img
+            src="https://via.placeholder.com/300"
+            alt={`Materi ${index + 1}`}
+            className="w-full h-48 object-cover rounded-md mb-4"
+          />
+          <h3 className="text-xl font-semibold flex items-center">
+            Materi {index + 1}
+          </h3>
+          <p className="text-gray-600 mt-2 flex items-start">
+            
+            Materi ini mencakup berbagai topik penting yang relevan untuk pengembangan diri.
+          </p>
+          <a href="#" className="text-blue-600 mt-4 block">
+            Lihat Selengkapnya
           </a>
         </div>
       </div>
+    ))}
+  </Slider>
+</section>
+
+
+
+      {/* Partnership */}
+      <section className="mt-12 p-8">
+        <h2 className="text-2xl font-bold text-center mb-6">Partnership Kami</h2>
+        <Slider {...sliderSettings}>
+          {[1, 2, 3, 4, 5].map((_, index) => (
+            <div key={index} className="p-4">
+              <div className="flex justify-center">
+                <img
+                  src={`https://picsum.photos/seed/${index}/200/150`}
+                  alt={`Partner ${index + 1}`}
+                  className="w-32 h-32 object-contain"
+                />
+              </div>
+            </div>
+          ))}
+        </Slider>
+      </section>
+
+      {/* FAQ */}
+      <section className="p-8">
+        <div className="flex">
+          <div className="w-1/2 pr-6">
+            <h2 className="text-2xl font-bold text-center mb-6">FAQ - Pertanyaan Umum</h2>
+            <div className="space-y-6">
+              {[
+                {
+                  question: "Apa itu EduPlatform?",
+                  answer:
+                    "EduPlatform adalah platform pembelajaran interaktif yang menyediakan berbagai materi pendidikan dan statistik pendidikan terkini.",
+                },
+                {
+                  question: "Bagaimana cara menggunakan EduPlatform?",
+                  answer: "Anda cukup mendaftar dan masuk untuk mengakses materi, grafik, dan fitur-fitur pembelajaran lainnya.",
+                },
+                {
+                  question: "Apakah EduPlatform gratis?",
+                  answer:
+                    "EduPlatform menawarkan akses gratis untuk sebagian besar konten. Beberapa fitur premium memerlukan langganan.",
+                },
+                {
+                  question: "Apa saja fitur yang tersedia?",
+                  answer:
+                    "EduPlatform menyediakan grafik statistik pendidikan, materi pembelajaran interaktif, dan layanan informasi pendidikan.",
+                },
+                {
+                  question: "Bagaimana cara mengakses materi pendidikan?",
+                  answer: "Anda dapat mengakses materi pendidikan melalui menu 'Materi Populer' yang tersedia di halaman utama.",
+                },
+              ].map((item, index) => (
+                <div key={index} className="p-4 bg-gray-50 rounded-lg shadow-md">
+                  <h3
+                    className="font-semibold text-lg cursor-pointer"
+                    onClick={() => toggleFAQ(index)}
+                  >
+                    {item.question}
+                  </h3>
+                  {isOpen === index && <p className="text-gray-600 mt-2">{item.answer}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Alamat Kami */}
+          <div className="w-1/2 pl-6">
+            <h2 className="text-2xl font-bold mb-4">Alamat Kami</h2>
+            <div className="relative w-full h-72">
+              <iframe
+                title="Google Map"
+                src="https://www.google.com/maps/embed/v1/place?q=Jl.+Ketintang+Baru+XII+No.26,+RT.004%2FRW.03,+Ketintang,+Kec.+Gayungan,+Surabaya,+Jawa+Timur+60231"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
